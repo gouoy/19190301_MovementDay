@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Mail, Github, Linkedin } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import backgroundImage from "@/assets/6624779691f76cbcca90705e206d90aec6227e21.png";
 
 // ─── 독립선언서 이미지 ──────────────────────────────────────
@@ -158,10 +159,38 @@ export default function App() {
   const [statusMessage, setStatusMessage] = useState("");
   const [showCreatorInfo, setShowCreatorInfo] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-  const [visitorCount] = useState(1247); // 서버 연결 후 실제 카운트로 교체
+  const [visitorCount, setVisitorCount] = useState(0);
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(false);
   const stageRef = useRef<Stage>("welcome");
+
+  useEffect(() => {
+    const handleVisitorCount = async () => {
+      try {
+        // 1. Get initial count
+        const { count, error: fetchError } = await supabase
+          .from("visitors")
+          .select("*", { count: "exact", head: true });
+
+        if (!fetchError && count !== null) {
+          setVisitorCount(count);
+        }
+
+        // 2. Add current visit
+        const { error: insertError } = await supabase
+          .from("visitors")
+          .insert([{}]);
+
+        if (!insertError) {
+          setVisitorCount((prev) => prev + 1);
+        }
+      } catch (err) {
+        console.error("Supabase error:", err);
+      }
+    };
+
+    handleVisitorCount();
+  }, []);
 
   useEffect(() => { isListeningRef.current = isListening; }, [isListening]);
   useEffect(() => { stageRef.current = stage; }, [stage]);
@@ -285,14 +314,13 @@ export default function App() {
             src={backgroundImage}
             alt="탑골공원 배경"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "calc(50% - 37.5px) center", imageRendering: "pixelated" }}
+            style={{ objectPosition: "center", imageRendering: "pixelated" }}
           />
 
           {/* 캐릭터 레이어 */}
           {stage === "listening" && (
             <div
               className="absolute inset-0 pointer-events-none"
-              style={{ right: "91px" }}
             >
               {FIXED_POSITIONS.slice(0, visibleCharacters).map((pos, i) => (
                 <div
@@ -314,7 +342,7 @@ export default function App() {
           )}
 
           {/* 메인 콘텐츠 영역 */}
-          <div className="absolute inset-0" style={{ right: "91px" }}>
+          <div className="absolute inset-0">
             <AnimatePresence mode="wait">
               {/* ── Welcome ── */}
               {stage === "welcome" && (
@@ -398,28 +426,7 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* 테스트 버튼 */}
-                  <div className="absolute top-[275px] left-0 right-0 flex justify-center">
-                    <button
-                      onClick={handleSimulate}
-                      style={{
-                        fontSize: "13px",
-                        fontFamily: FONT,
-                        fontWeight: "normal",
-                        color: "white",
-                        background: "rgba(0,0,0,0.35)",
-                        border: "1px solid rgba(255,255,255,0.6)",
-                        padding: "6px 14px",
-                        cursor: "pointer",
-                        letterSpacing: "0.04em",
-                        backdropFilter: "blur(4px)",
-                      }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,0,0,0.55)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,0,0,0.35)")}
-                    >
-                      🎤 대한독립만세! (테스트)
-                    </button>
-                  </div>
+
                 </motion.div>
               )}
             </AnimatePresence>
@@ -501,8 +508,8 @@ export default function App() {
                 </span>
                 <div className="flex items-center gap-2">
                   <a href="mailto:contact@example.com" className="text-white/70 hover:text-white transition-colors"><Mail size={18} /></a>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Github size={18} /></a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Linkedin size={18} /></a>
+                  <a href="https://github.com/gouoy/19190301_MovementDay" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Github size={18} /></a>
+                  <a href="https://www.linkedin.com/in/gayeongk1m/" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Linkedin size={18} /></a>
                 </div>
               </div>
             )}
