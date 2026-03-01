@@ -260,7 +260,7 @@ export default function App() {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText("https://19190301-movement-day.vercel.app/");
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
     } catch {
