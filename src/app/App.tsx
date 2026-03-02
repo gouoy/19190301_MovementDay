@@ -165,31 +165,36 @@ export default function App() {
   const stageRef = useRef<Stage>("welcome");
 
   useEffect(() => {
-    const handleVisitorCount = async () => {
+    const trackEvent = async (eventName: string) => {
       try {
-        // 1. Get initial count
-        const { count, error: fetchError } = await supabase
-          .from("visitors")
-          .select("*", { count: "exact", head: true });
-
-        if (!fetchError && count !== null) {
-          setVisitorCount(count);
-        }
-
-        // 2. Add current visit
-        const { error: insertError } = await supabase
-          .from("visitors")
-          .insert([{}]);
-
-        if (!insertError) {
-          setVisitorCount((prev) => prev + 1);
-        }
+        await supabase.from("events").insert([{ event_name: eventName }]);
       } catch (err) {
-        console.error("Supabase error:", err);
+        console.error(`Event tracking error (${eventName}):`, err);
       }
     };
 
-    handleVisitorCount();
+    const handleInitialLoad = async () => {
+      try {
+        // Fetch total landing count from summary table for display
+        const { data, error } = await supabase
+          .from("event_counts")
+          .select("count")
+          .eq("event_name", "landing")
+          .single();
+
+        if (!error && data) {
+          setVisitorCount(data.count);
+        }
+
+        // Track landing event
+        await trackEvent("landing");
+      } catch (err) {
+        console.error("Supabase load error:", err);
+      }
+    };
+
+    handleInitialLoad();
+    (window as any).trackEvent = trackEvent; // Provide global access for other handlers
   }, []);
 
   useEffect(() => { isListeningRef.current = isListening; }, [isListening]);
@@ -230,6 +235,7 @@ export default function App() {
         isListeningRef.current = false;
         setIsListening(false);
         try { recognitionRef.current?.stop(); } catch (_) { }
+        (window as any).trackEvent?.("complete");
         // 200명 캐릭터가 다 나온 후 2.5초 뒤 엔딩 전환
         setTimeout(() => setStage("ending"), 2500);
       }
@@ -253,13 +259,17 @@ export default function App() {
     try { recognitionRef.current?.stop(); } catch (_) { }
   };
 
-  const handleConfirm = () => startListening();
+  const handleConfirm = () => {
+    (window as any).trackEvent?.("start_click");
+    startListening();
+  };
   const handleStop = () => { stopListening(); setStage("welcome"); setCount(0); setStatusMessage(""); };
   const handleRestart = () => { setStage("welcome"); setCount(0); setStatusMessage(""); setShowCreatorInfo(false); setLinkCopied(false); };
   const handleSimulate = () => triggerCount();
 
   const handleShare = async () => {
     try {
+      (window as any).trackEvent?.("share_click");
       await navigator.clipboard.writeText("https://19190301-movement-day.vercel.app/");
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
@@ -484,7 +494,10 @@ export default function App() {
           {/* ── 상단: 태극기 + 제작자 정보 ── */}
           <div className="relative flex items-center gap-3 px-4 pt-4 sm:px-8 sm:pt-6" style={{ zIndex: 10 }}>
             <button
-              onClick={() => setShowCreatorInfo(prev => !prev)}
+              onClick={() => {
+                setShowCreatorInfo(prev => !prev);
+                if (!showCreatorInfo) (window as any).trackEvent?.("creator_info_click");
+              }}
               className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
               style={{ background: "none", border: "none", padding: "4px", fontSize: "28px", lineHeight: 1 }}
               title="제작자 정보"
@@ -508,8 +521,24 @@ export default function App() {
                 </span>
                 <div className="flex items-center gap-2">
                   <a href="mailto:contact@example.com" className="text-white/70 hover:text-white transition-colors"><Mail size={18} /></a>
-                  <a href="https://github.com/gouoy/19190301_MovementDay" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Github size={18} /></a>
-                  <a href="https://www.linkedin.com/in/gayeongk1m/" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors"><Linkedin size={18} /></a>
+                  <a
+                    href="https://github.com/gouoy/19190301_MovementDay"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => (window as any).trackEvent?.("github_click")}
+                    className="text-white/70 hover:text-white transition-colors"
+                  >
+                    <Github size={18} />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/gayeongk1m/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => (window as any).trackEvent?.("linkedin_click")}
+                    className="text-white/70 hover:text-white transition-colors"
+                  >
+                    <Linkedin size={18} />
+                  </a>
                 </div>
               </div>
             )}
