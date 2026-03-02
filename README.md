@@ -8,6 +8,14 @@
 ## 프로젝트 기간 (Project Duration)
 2026.03.01 ~ 2026.03.02 
 
+## 🚀 Links
+
+- **🔗 사이트 바로 보기:(Go to Website)** [온라인 3.1 운동 웹사이트](https://19190301-movement-day.vercel.app/)
+- **📝 회고 및 기록 보기(Go to Notion):** 
+- [노션 회고록 KOR](https://flint-august-530.notion.site/3-1-316a565913a480d8bab8f874475e8305?source=copy_link)
+[Notion in Eng](https://flint-august-530.notion.site/Vibe-Coding-1-audio-interactive-31-movement-website-317a565913a480c69da8dcedcf4fda76?source=copy_link) 
+
+---
 
 
 ## 🛠️ 기술 스택(Tech Stack)
@@ -75,13 +83,3 @@ graph LR
     Result --> Stats[전체 참여 현황 확인]
     Stats --> End([종료])
 ```
-
----
-
-## 🚀 Links
-
-- **🔗 사이트 바로 보기:(Go to Website)** [온라인 3.1 운동 웹사이트](https://19190301-movement-day.vercel.app/)
-- **📝 회고 및 기록 보기(Go to Notion):** 
-- [노션 회고록 KOR](https://flint-august-530.notion.site/3-1-316a565913a480d8bab8f874475e8305?source=copy_link)
-[Notion in Eng]() 
-
