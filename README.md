@@ -11,11 +11,11 @@
 
 ## 🛠️ 기술 스택(Tech Stack)
 
-- **기획:** Gemini
-- **디자인:** Nano banana
+- **기획(Planning):** Gemini
+- **디자인(Design):** Nano banana
 - **UI/UX:** Figma
-- **개발:** Figma Make, Antigravity
-- **배포** Vercel 
+- **개발(Development):** Figma Make, Antigravity
+- **배포(Deployment)** Vercel 
 - **DB** Supabase 
 - **STT** Web Speech API 
 
@@ -23,6 +23,8 @@
 
 ## 🚀 Links
 
-- **🔗 사이트 바로 보기:** [온라인 3.1 운동 웹사이트](https://19190301-movement-day.vercel.app/)
-- **📝 회고 및 기록 보기:** [노션 회고록](https://flint-august-530.notion.site/3-1-316a565913a480d8bab8f874475e8305?source=copy_link)
+- **🔗 사이트 바로 보기:(Go to Website)** [온라인 3.1 운동 웹사이트](https://19190301-movement-day.vercel.app/)
+- **📝 회고 및 기록 보기(Go to Notion):** 
+- [노션 회고록 KOR](https://flint-august-530.notion.site/3-1-316a565913a480d8bab8f874475e8305?source=copy_link)
+[Notion in Eng]() 
 
