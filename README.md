@@ -2,7 +2,8 @@
 
 
 > **Speech-to-text(STT)를 활용한 온라인 3.1 운동 기념 웹 프로젝트입니다.**
-> **Online movement day website using Speech-to-text** 
+
+>**Online movement day website using Speech-to-text** 
 
 ## 프로젝트 기간 (Project Duration)
 2026.03.01 ~ 2026.03.02 
@@ -56,6 +57,7 @@ movement/
     Frontend->>+Supabase: 이벤트 기록 (이벤트/집계 DB 저장)
     Supabase-->>-Frontend: 누적 참여 데이터 반환
     Frontend-->>-User: 실시간 카운트 표시 UI 업데이트
+``` 
 
 ### User Journey 🗺️
 ```mermaid
